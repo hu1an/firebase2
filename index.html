@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Enter Name</h1>
+      <input class="name" type="text" />
+      <h2>Enter age</h2>
+      <input class="age" type="number" />
+      <h3>Enter email</h3>
+      <input class="email" type="email" />
+      <button class="btn">click to save</button>
+      <input class="findDataa" type="text" />
+      <button class="butn">click to search</button>
+      <div class="findName"></div>
+      <div class="findAge"></div>
+
+      <button class="tovchh">Remove</button>
+    </div>
+    <div class="container">
+      <h1>Upadete section</h1>
+      <input class="uName" type="text" placeholder="name" />
+      <input type="number" class="uAge" placeholder="age" />
+      <button class="tovch">Update</button>
+    </div>
+    <style>
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCOsFwkhZDDXOhyq4mWpKmb-KK9bg8evrA",
+        authDomain: "mywebbb-b66cc.firebaseapp.com",
+        projectId: "mywebbb-b66cc",
+        storageBucket: "mywebbb-b66cc.appspot.com",
+        messagingSenderId: "958344527147",
+        appId: "1:958344527147:web:5ec49ccdaa46a505f1196e",
+        // +databaseURL
+        databaseURL:
+          "https://mywebbb-b66cc-default-rtdb.asia-southeast1.firebasedatabase.app",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      import {
+        getDatabase,
+        ref,
+        set,
+        onValue,
+        get,
+        update,
+        remove,
+        child,
+      } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-database.js";
+      const db = getDatabase(app);
+      const btn = document.querySelector(".btn");
+      const name = document.querySelector(".name");
+      const age = document.querySelector(".age");
+      const email = document.querySelector(".email");
+      const butn = document.querySelector(".butn");
+      const findDataa = document.querySelector(".findDataa");
+      const findName = document.querySelector(".findName");
+      const findAge = document.querySelector(".findAge");
+
+      btn.addEventListener("click", () => {
+        const data = {
+          name: name.value,
+          age: age.value,
+          email: email.value,
+        };
+        set(ref(db, "ners/" + name.value), data);
+      });
+      function FindData() {
+        const dbref = ref(db);
+
+        get(child(dbref, "ners/" + findDataa.value))
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              console.log("success");
+              findName.innerHTML = "Name: " + snapshot.val().name;
+              findAge.innerHTML = "Age: " + snapshot.val().age;
+            } else {
+              alert("No data found");
+            }
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      }
+      butn.addEventListener("click", FindData);
+
+      function removeData() {
+        const name = findDataa.value;
+        remove(ref(db, "ners/" + name));
+      }
+      const tovchh = document.querySelector(".tovchh");
+      tovchh.addEventListener("click", removeData);
+
+      const updateage = document.querySelector(".uAge");
+      const uName = document.querySelector(".uName");
+      const tovch = document.querySelector(".tovch");
+      tovch.addEventListener("click", () => {
+        update(ref(db, "ners/" + uName.value), {
+          age: updateage.value,
+          name: uName.value + 1,
+        });
+      });
+    </script>
+  </body>
+</html>
